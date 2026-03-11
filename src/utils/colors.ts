@@ -24,8 +24,13 @@ const COLOR_MAP: Record<
 type ColorStyle = { color: string; backgroundColor?: string; borderColor?: string; segmentFill?: string };
 const DEFAULT_STYLE: ColorStyle = { color: "#78716c", backgroundColor: undefined, borderColor: undefined, segmentFill: undefined };
 
+function getColorStyle(colorName?: string): ColorStyle {
+  if (!colorName || !(colorName in COLOR_MAP)) return DEFAULT_STYLE;
+  return COLOR_MAP[colorName];
+}
+
 export function getDollFillColor(colorName?: string): string {
-  const style: ColorStyle = (colorName && COLOR_MAP[colorName]) ?? DEFAULT_STYLE;
+  const style = getColorStyle(colorName);
   return style.segmentFill ?? style.backgroundColor ?? style.color;
 }
 
@@ -39,7 +44,7 @@ export function getDollSegmentTextColor(colorName?: string): string {
 }
 
 export function getDollColorStyle(colorName?: string): CSSProperties {
-  const style: ColorStyle = (colorName && COLOR_MAP[colorName]) ?? DEFAULT_STYLE;
+  const style = getColorStyle(colorName);
   return {
     color: style.color,
     ...(style.backgroundColor && { backgroundColor: style.backgroundColor }),
