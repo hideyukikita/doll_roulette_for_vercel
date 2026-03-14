@@ -148,19 +148,20 @@ export default function RoulettePage() {
     setResetting(true);
     setError(null);
     setHistories([]);
+    setAllDone(false);
+    setResult(null);
+    resultRef.current = null;
+    setLuckySecond(false);
+    setShowingResult(false);
+    setWinnerId(null);
+    setWheelDolls([]);
     try {
       await apiJson("/api/reset", { method: "POST" });
       if (resultTimeoutRef.current) {
         clearTimeout(resultTimeoutRef.current);
         resultTimeoutRef.current = null;
       }
-      setResult(null);
-      resultRef.current = null;
-      setLuckySecond(false);
-      setAllDone(false);
-      setShowingResult(false);
-      setWinnerId(null);
-      setWheelDolls([]);
+      setDolls((prev) => prev.map((d) => ({ ...d, is_selected: false })));
       const [list, hist] = await Promise.all([
         apiJson<Doll[]>("/api/dolls"),
         apiJson<HistoryRecord[]>("/api/histories?limit=20"),
