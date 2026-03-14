@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServiceClient } from "@/lib/supabase/server";
 import { requireAuthApi } from "@/lib/auth";
 
-/** POST /api/reset - 全員の選択状態と当選履歴をリセット */
+/** POST /api/reset - 全員の選択状態と当選履歴をリセット（RLS をバイパスするサービスロールを使用） */
 export async function POST(req: NextRequest) {
   const auth = await requireAuthApi(req);
   if (auth) return auth;
-  const supabase = createSupabaseServerClient();
+  const supabase = createSupabaseServiceClient();
   const { error: delError } = await supabase.from("histories").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   if (delError) {
     return NextResponse.json({ error: "リセットに失敗しました" }, { status: 500 });

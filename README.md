@@ -12,6 +12,7 @@ Next.js（App Router）で動く「かぞくたちルーレット」です。Ver
 2. **環境変数**
    - `.env.local.example` をコピーして `.env.local` を作成
    - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`（Supabase の Project Settings → API）
+   - `SUPABASE_SERVICE_ROLE_KEY`（Supabase の Project Settings → API の **service_role** キー。リセット機能で使用。RLS を有効にしている場合は必須）
    - `APP_PASSWORD`（入室用パスワード・任意）
 
 3. **Supabase 側**
