@@ -9,11 +9,13 @@ export async function POST(req: NextRequest) {
   const supabase = createSupabaseServiceClient();
   const { error: delError } = await supabase.from("histories").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   if (delError) {
+    console.error("[reset] histories delete error:", delError);
     const msg = delError.message || String(delError);
     return NextResponse.json({ error: "リセットに失敗しました", detail: msg }, { status: 500 });
   }
   const { data: updated, error: updateError } = await supabase.from("dolls").update({ is_selected: false }).select("id");
   if (updateError) {
+    console.error("[reset] dolls update error:", updateError);
     const msg = updateError.message || String(updateError);
     return NextResponse.json({ error: "リセットに失敗しました", detail: msg }, { status: 500 });
   }
