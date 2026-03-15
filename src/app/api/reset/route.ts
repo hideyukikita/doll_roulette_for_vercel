@@ -15,7 +15,12 @@ export async function POST(req: NextRequest) {
       const msg = [err.message, err.code, err.details].filter(Boolean).join(" | ") || String(delError);
       return NextResponse.json({ error: "リセットに失敗しました", detail: msg }, { status: 500 });
     }
-    const { data: updated, error: updateError } = await supabase.from("dolls").update({ is_selected: false }).select("id");
+    const { data: ids } = await supabase.from("dolls").select("id");
+    const idList = (ids ?? []).map((r) => r.id);
+    const { data: updated, error: updateError } =
+      idList.length > 0
+        ? await supabase.from("dolls").update({ is_selected: false }).in("id", idList).select("id")
+        : { data: [], error: null };
     if (updateError) {
       console.error("[reset] dolls update error:", updateError);
       const err = updateError as { message?: string; code?: string; details?: string };
