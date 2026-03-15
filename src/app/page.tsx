@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { apiJson } from "@/lib/api";
+import { apiJson, apiFetch } from "@/lib/api";
 import type { Doll } from "@/types/doll";
 import type { HistoryRecord } from "@/types/history";
 import { getDollColorStyle } from "@/utils/colors";
@@ -156,7 +156,19 @@ export default function RoulettePage() {
     setWinnerId(null);
     setWheelDolls([]);
     try {
-      await apiJson("/api/reset", { method: "POST" });
+      const resetRes = await apiFetch("/api/reset", { method: "POST" });
+      const bodyText = await resetRes.text();
+      if (!resetRes.ok) {
+        let msg = "リセットに失敗しました";
+        try {
+          const data = JSON.parse(bodyText) as { error?: string };
+          if (data.error && data.error.trim()) msg = data.error;
+        } catch {
+          if (bodyText.trim()) msg = bodyText;
+        }
+        setError(msg);
+        return;
+      }
       if (resultTimeoutRef.current) {
         clearTimeout(resultTimeoutRef.current);
         resultTimeoutRef.current = null;
